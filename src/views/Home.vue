@@ -5,6 +5,8 @@
             <div class="title">
             云E办
             </div>
+            <div>
+                <el-button type="text" icon="el-icon-bell" size="normal" style="margin-right: 8px;color: black;" @click="goChat"></el-button>
                 <el-dropdown class="userInfo" @command="commandHandler">
                     <span class="el-dropdown-link">
                         {{ user.name }}<i ><img :src="user.userFace"/></i>
@@ -15,24 +17,25 @@
                         <el-dropdown-item command="logout">注销登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
+            </div>
         </el-header>
         <el-container>
             <el-aside width="200px">
                 <el-menu router unique-opened>
                     <el-submenu :index="index+''" v-for="(item, index) in routes" :key="index" v-if="!item.hidden">
                         <template slot="title"><i :class="item.iconCls" style="color: #1accff;margin-right: 5px;"></i>{{ item.name }}</template>
-                        
+                            <template v-if="item.children">
                             <el-menu-item :index="children.path" v-for="(children, indexj) in item.children" :key="indexj">
                                 {{ children.name }}
                             </el-menu-item>
-                        
+                            </template>
                     </el-submenu>
                 </el-menu>
             </el-aside>
             <el-main>
                 <el-breadcrumb v-if="this.$router.currentRoute.path!='/home'" separator-class="el-icon-arrow-right">
                     <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-                    <el-breadcrumb-item>{{ this.$router.currentRoute.name }}</el-breadcrumb-item>
+                    <el-breadcrumb-item>{{  this.$router.currentRoute ? this.$router.currentRoute.name : 'Loading...' }}</el-breadcrumb-item>
                 </el-breadcrumb>
                 <div class="homeWelcom" v-if="this.$router.currentRoute.path=='/home'">欢迎来到云E办系统</div>
                 <router-view class="homeRouterView"/>
@@ -46,31 +49,40 @@
 export default {
     name:'Home',
     methods:{
-      commandHandler(command){
-        if(command=='logout'){
-            this.$confirm('此操作将注销登录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-            this.postRequest('/logout')
-            //清空用户信息
-            window.sessionStorage.removeItem('tokenStr')
-            window.sessionStorage.removeItem('user')
-            this.$store.commit('initRoutes',[])
-            //跳转到登录页
-            this.$router.replace('/')
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });          
-        });
-          
+        goChat(){
+            this.$router.push('/chat')
+        },
+        commandHandler(command){
+            if(command=='logout'){
+                this.$confirm('此操作将注销登录, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).then(() => {
+                this.postRequest('/logout')
+                //清空用户信息
+                window.sessionStorage.removeItem('tokenStr')
+                window.sessionStorage.removeItem('user')
+                this.$store.commit('initRoutes',[])
+                //跳转到登录页
+                this.$router.replace('/')
+            }).catch(() => {
+            this.$message({
+                type: 'info',
+                message: '已取消'
+            });          
+            });
+            
+            }
+            if(command=='userinfo'){
+                this.$router.push('/userinfo')
+            }
         }
-      }
     },
     computed:{
+        // user(){
+        //     return this.$store.state.currentAdmin
+        // },
         routes(){
             return this.$store.state.routes
         }

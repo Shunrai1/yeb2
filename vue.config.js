@@ -1,5 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 
+
 let proxyObj={}
 proxyObj['/']={
   //websocket
@@ -10,6 +11,11 @@ proxyObj['/']={
   pathWrite:{
     '^/':'/'
   }
+}
+
+proxyObj['/ws']={
+  ws:false,
+  target:'ws://localhost:8081'
 }
 
 module.exports = defineConfig({

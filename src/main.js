@@ -1,15 +1,31 @@
-import Vue from 'vue';
+// import Vue from 'vue';
+// import ElementUI from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
+// import 'font-awesome/css/font-awesome.css'
+// import App from './App.vue';
+// //引入VueRouter
+// import VueRouter from 'vue-router'
+// //引入路由器
+// import router from './router'
+// import store from './store';
+// import { postRequest,getRequest,putRequest,deleteRequest } from '@/utils/api'
+// import { initMenu } from './utils/menu';
+// import { downloadRequset } from './utils/download';
+
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+import store from './store'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import 'font-awesome/css/font-awesome.css'
-import App from './App.vue';
-//引入VueRouter
-import VueRouter from 'vue-router'
-//引入路由器
-import router from './router'
-import store from './store';
-import { postRequest,getRequest,putRequest,deleteRequest } from '@/utils/api'
-import { initMenu } from './utils/menu';
+import 'font-awesome/css/font-awesome.css';
+
+import { postRequest } from "./utils/api";
+import { putRequest } from "./utils/api";
+import { getRequest } from "./utils/api";
+import { deleteRequest } from "./utils/api";
+import {initMenu} from "./utils/menu";
+import { downloadRequset } from './utils/download';
 
 Vue.config.productionTip = false
 
@@ -17,9 +33,10 @@ Vue.prototype.postRequest=postRequest
 Vue.prototype.putRequest=putRequest
 Vue.prototype.getRequest=getRequest
 Vue.prototype.deleteRequest=deleteRequest
+Vue.prototype.downloadRequest=downloadRequset
 
 Vue.use(ElementUI,{size:'small'});
-Vue.use(VueRouter)
+
 
 // //解决编程式路由往同一地址跳转时会报错的情况
 // const originalPush = VueRouter.prototype.push;
@@ -41,12 +58,13 @@ Vue.use(VueRouter)
 router.beforeEach((to,from,next)=>{
   if(window.sessionStorage.getItem('tokenStr')){
     initMenu(router,store)
-
     //判断用户信息是否存在
     if(!window.sessionStorage.getItem('user')){
-      return getRequest('admin/info').then(resp=>{
+      getRequest('/admin/info').then(resp=>{
         if(resp){
+          //存入用户信息
           window.sessionStorage.setItem('user',JSON.stringify(resp))
+          // store.commit('INIT_ADMIN',resp)
           next()
         }
       })

@@ -1,8 +1,11 @@
-// 该文件专门用于创建整个应用的路由器
+import Vue from 'vue'
 import VueRouter from 'vue-router'
-//引入组件
 import Login from '../views/Login.vue'
-import Home from '../views/Home.vue'
+import Home from "../views/Home";
+import FriendChat from "../views/chat/FriendChat";
+import AdminInfo from "../views/AdminInfo"
+
+Vue.use(VueRouter)
 
 const routes =[
 	{
@@ -13,9 +16,20 @@ const routes =[
 	},
 	{
 		path:'/home',
-		name:'导航一',
+		name:'Home',
 		component:Home,
-
+		children:[
+			{
+				path:'/chat',
+				name:'在线聊天',
+				component:FriendChat
+			},
+			{
+				path:'/userinfo',
+				name:'个人中心',
+				component:AdminInfo
+			}
+		]
 	},
 
 ]

@@ -7,10 +7,12 @@ export const initMenu = (router,store)=>{
 
     getRequest('/system/config/menu').then(data=>{
         if (data){
+            console.log(data)
             //格式化Router
             let fmtRoutes = formatRoutes(data)
             //添加到router
             router.addRoutes(fmtRoutes);
+            console.log('fmtRoutes'+JSON.stringify(fmtRoutes))
             //将数据存入vuex
             store.commit('initRoutes',fmtRoutes);
             //链接WebSocket
